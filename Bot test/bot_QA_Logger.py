@@ -1,12 +1,7 @@
 import logging
 import os
 from datetime import datetime
-
-LOG_DIR = r'G:\Log'
-
-# Создать папку для логов, если её нет
-if not os.path.exists(LOG_DIR):
-    os.makedirs(LOG_DIR)
+from config import LOG_DIR
 
 # Генерируем уникальное имя файла логов с увеличением цифр
 def get_log_filename():
