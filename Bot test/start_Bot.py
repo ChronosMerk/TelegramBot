@@ -1,8 +1,7 @@
-from base_Command import start, help, categories, menu
+from base_Command import QABot
 from bot_QA_Logger import logger
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
-from config import tokenTG
 
 # Обработчик кнопок категорий
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -34,13 +33,8 @@ async def unknown_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(reply_message)
     logger.warning('Неизвестное сообщение от %s (%s): "%s"', user.username, user.id, text)
-
-def main():
+'''def main():
     app = ApplicationBuilder().token(tokenTG).build()
-    app.add_handler(CommandHandler('start', start))
-    app.add_handler(CommandHandler('help', help))
-    app.add_handler(CommandHandler('categories', categories))
-    app.add_handler(CommandHandler('menu', menu))
 
     # Обработчик нажатий на кнопки
     app.add_handler(CallbackQueryHandler(button_handler))
@@ -51,8 +45,8 @@ def main():
 
     logger.info('Все завилось, Проверяй')
     app.run_polling()
-
-
+    '''
 
 if __name__ == "__main__":
-    main()
+    bot = QABot()  # Создаём объект бота
+    bot.run()  # Запускаем бота

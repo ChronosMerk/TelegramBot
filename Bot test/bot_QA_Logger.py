@@ -23,5 +23,9 @@ logging.basicConfig(
     filemode = 'w'
 )
 
-
 logger = logging.getLogger(__name__)
+
+def log_command(user, reply_message):
+    """Логирует вызов команды и ответ бота"""
+    logger.info('Пользователь %s (%s) вызвал %s', user.from_user.username, user.from_user.id, user.text)
+    logger.info('Отправлено сообщение пользователю %s (%s): "%s"', user.from_user.username, user.from_user.id, reply_message)
