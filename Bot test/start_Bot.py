@@ -1,4 +1,4 @@
-from base_Command import start, help, categories
+from base_Command import start, help, categories, menu
 from bot_QA_Logger import logger
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
@@ -40,6 +40,7 @@ def main():
     app.add_handler(CommandHandler('start', start))
     app.add_handler(CommandHandler('help', help))
     app.add_handler(CommandHandler('categories', categories))
+    app.add_handler(CommandHandler('menu', menu))
 
     # Обработчик нажатий на кнопки
     app.add_handler(CallbackQueryHandler(button_handler))
