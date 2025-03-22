@@ -23,9 +23,10 @@ logging.basicConfig(
     filemode = 'w'
 )
 
-logger = logging.getLogger(__name__)
+def starting_bot():
+    logging.getLogger(__name__).info("Все завилось, Проверяй")
 
+"""Логирует вызов команды и ответ бота"""
 def log_command(user, reply_message):
-    """Логирует вызов команды и ответ бота"""
-    logger.info('Пользователь %s (%s) вызвал %s', user.from_user.username, user.from_user.id, user.text)
-    logger.info('Отправлено сообщение пользователю %s (%s): "%s"', user.from_user.username, user.from_user.id, reply_message)
+    logging.getLogger(__name__).info('Пользователь %s (%s) вызвал %s', user.from_user.username, user.from_user.id, user.text)
+    logging.getLogger(__name__).info('Отправлено сообщение пользователю %s (%s): "%s"', user.from_user.username, user.from_user.id, reply_message)
