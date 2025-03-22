@@ -1,5 +1,6 @@
 import logging
 import os
+from telegram import Update
 from datetime import datetime
 from config import LOG_DIR
 
@@ -28,5 +29,13 @@ def starting_bot():
 
 """Логирует вызов команды и ответ бота"""
 def log_command(user, reply_message):
-    logging.getLogger(__name__).info('Пользователь %s (%s) вызвал %s', user.from_user.username, user.from_user.id, user.text)
-    logging.getLogger(__name__).info('Отправлено сообщение пользователю %s (%s): "%s"', user.from_user.username, user.from_user.id, reply_message)
+    if user.message:
+        logging.getLogger(__name__).info('Пользователь %s (%s) вызвал %s', user.message.from_user.username,
+                                         user.message.from_user.id, user.message.text)
+        logging.getLogger(__name__).info('Отправлено сообщение пользователю %s (%s): "%s"', user.message.from_user.username,
+                                         user.message.from_user.id, reply_message)
+    elif user.callback_query:
+        logging.getLogger(__name__).info('Пользователь %s (%s) вызвал %s', user.callback_query.from_user.username,
+                                         user.callback_query.from_user.id, user.callback_query.data)
+        logging.getLogger(__name__).info('Отправлено сообщение пользователю %s (%s): "%s"',
+                                         user.callback_query.from_user.username, user.callback_query.from_user.id, reply_message)
