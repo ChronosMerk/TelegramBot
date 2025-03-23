@@ -1,11 +1,12 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from bot_QA_Logger import log_command
+from metrics import track_command, track_response_time
 
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
 
+    query = update.callback_query
     await query.answer()
 
     category_map = {
@@ -17,7 +18,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "checklists": "✅ Чек-листы — стандарты тестирования.",
         "security": "🔒 Security Testing — тестирование безопасности.",
     }
-
-    reply_text = category_map.get(query.data, "❌ Неизвестная категория")
-    await query.edit_message_text(text=reply_text)
-    log_command(update, reply_text)
+    with track_response_time(query.data):
+        reply_text = category_map.get(query.data, "❌ Неизвестная категория")
+        await query.edit_message_text(text=reply_text)
+        log_command(update, reply_text)
+        track_command(query.data)

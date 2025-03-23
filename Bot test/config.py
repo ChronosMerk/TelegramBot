@@ -8,7 +8,7 @@ tokenTG = os.getenv('TOKEN')
 if not tokenTG:
     raise ValueError("Ошибка: TOKEN не найден! Проверь файл .env")
 
-LOG_DIR = r'G:\Log'
+LOG_DIR = r'G:\Docker\Log'
 
 # Создать папку для логов, если её нет
 if not os.path.exists(LOG_DIR):

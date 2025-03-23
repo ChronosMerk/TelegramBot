@@ -29,7 +29,7 @@ class QABot:
     # Обработчик неизвестных команд и сообщений
     @staticmethod
     async def unknown_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        with track_response_time():
+        with track_response_time(update.message.text):
             reply_message = "Извини, я не понимаю эту команду."
 
             await update.message.reply_text(reply_message)
@@ -39,7 +39,7 @@ class QABot:
     @staticmethod
     async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Команда /start"""
-        with track_response_time():
+        with track_response_time(update.message.text):
             user = update.message
             reply_message = f"Привет, {user.from_user.first_name}! Я QA-бот, который поможет тебе изучить QA!"
 
@@ -50,7 +50,7 @@ class QABot:
     @staticmethod
     async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Команда /help"""
-        with track_response_time():
+        with track_response_time(update.message.text):
             reply_message = "Основные команды бота: \n/start — приветствие и описание возможностей бота. \n/help — краткая инструкция по использованию и список доступных команд. \n/categories — отображение списка категорий (например, «Manual QA», «Automation QA», «Инструменты», «Методологии», «QAQ» и т.д.)."
 
             await update.message.reply_text(reply_message)
@@ -59,7 +59,8 @@ class QABot:
 
     @staticmethod
     async def categories(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        with track_response_time():
+        """Команда /categories"""
+        with track_response_time(update.message.text):
             keyboard = [
                 [InlineKeyboardButton("📌 Manual QA", callback_data="manual")],
                 [InlineKeyboardButton("🤖 Automation QA", callback_data="automation")],
