@@ -13,3 +13,5 @@ LOG_DIR = r'G:\Log'
 # Создать папку для логов, если её нет
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
+
+prometheus_port = 8000
