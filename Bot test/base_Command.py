@@ -29,10 +29,12 @@ class QABot:
     # Обработчик неизвестных команд и сообщений
     @staticmethod
     async def unknown_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        reply_message = "Извини, я не понимаю эту команду."
+        with track_response_time():
+            reply_message = "Извини, я не понимаю эту команду."
 
-        await update.message.reply_text(reply_message)
-        log_command(update, reply_message)
+            await update.message.reply_text(reply_message)
+            log_command(update, reply_message)
+            track_command("unknown")
 
     @staticmethod
     async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
