@@ -1,6 +1,5 @@
 import logging
 import os
-from telegram import Update
 from datetime import datetime
 from config import LOG_DIR
 
