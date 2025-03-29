@@ -1,4 +1,4 @@
-from config import tokenTG
+from config import config
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 from bot_QA_Logger import log_command, starting_bot
@@ -10,7 +10,7 @@ class QABot:
 
     def __init__(self):
         """Инициализация бота"""
-        self.application = ApplicationBuilder().token(tokenTG).build()
+        self.application = ApplicationBuilder().token(config.tokenTG).build()
         self.setup_handlers()
 
     def setup_handlers(self):

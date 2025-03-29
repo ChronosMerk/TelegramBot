@@ -1,20 +1,45 @@
 import os
+from dataclasses import dataclass
 from dotenv import load_dotenv
 
-# Токен Telegram-бота
+# Загрузка .env
 load_dotenv()
-tokenTG = os.getenv('TOKEN')
-tokenDeepSeek = os.getenv('TOKENDEEPSEEK')
 
-if not tokenTG:
-    raise ValueError("Ошибка: TOKEN для телеграмм не найден! Проверь файл .env")
-if not tokenDeepSeek:
-    raise ValueError("Ошибка: TOKEN для DeepSeek не найден! Проверь файл .env")
+@dataclass
+class BotConfig:
+    tokenTG: str
+    tokenDeepSeek: str
+    tokenGPT: str
+    log_dir: str = r'G:\Docker\Log'
+    prometheus_port: int = 8000
 
-LOG_DIR = r'G:\Docker\Log'
+# Получение и валидация токенов
+def get_config() -> BotConfig:
+    missing = []
 
-# Создать папку для логов, если её нет
-if not os.path.exists(LOG_DIR):
-    os.makedirs(LOG_DIR)
+    tokenTG = os.getenv("TOKEN")
+    if not tokenTG: missing.append("TOKEN")
 
-prometheus_port = 8000
+    tokenDeepSeek = os.getenv("TOKENDEEPSEEK")
+    if not tokenDeepSeek: missing.append("TOKENDEEPSEEK")
+
+    tokenGPT = os.getenv("TOKENGPT")
+    if not tokenGPT: missing.append("TOKENGPT")
+
+    if missing:
+        raise ValueError(f"❌ Отсутствуют переменные в .env: {', '.join(missing)}")
+
+    # Создание директории для логов
+    log_dir = r'G:\Docker\Log'
+    os.makedirs(log_dir, exist_ok=True)
+
+    return BotConfig(
+        tokenTG=tokenTG,
+        tokenDeepSeek=tokenDeepSeek,
+        tokenGPT=tokenGPT,
+        log_dir=log_dir,
+        prometheus_port=8000
+    )
+
+# Импортируем готовую конфигурацию
+config = get_config()

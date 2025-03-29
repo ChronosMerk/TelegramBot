@@ -1,18 +1,18 @@
 import logging
 import os
 from datetime import datetime
-from config import LOG_DIR
+from config import config
 
 # Генерируем уникальное имя файла логов с увеличением цифр
 def get_log_filename():
     base_name = datetime.now().strftime('bat_log_%Y-%m-%d')
     counter = 1
-    log_filename = os.path.join(LOG_DIR, f"{base_name}_{counter}.log")
+    log_filename = os.path.join(config.log_dir, f"{base_name}_{counter}.log")
 
     # Проверка существования файла, если есть — увеличиваем цифру
     while os.path.exists(log_filename):
         counter += 1
-        log_filename = os.path.join(LOG_DIR, f"{base_name}_{counter}.log")
+        log_filename = os.path.join(config.log_dir, f"{base_name}_{counter}.log")
     return  log_filename
 
 # Настройки логирования
