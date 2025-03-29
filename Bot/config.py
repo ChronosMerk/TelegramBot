@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 # Токен Telegram-бота
 load_dotenv()
 tokenTG = os.getenv('TOKEN')
+tokenDeepSeek = os.getenv('TOKENDEEPSEEK')
 
 if not tokenTG:
     raise ValueError("Ошибка: TOKEN не найден! Проверь файл .env")
