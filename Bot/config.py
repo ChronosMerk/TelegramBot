@@ -7,7 +7,9 @@ tokenTG = os.getenv('TOKEN')
 tokenDeepSeek = os.getenv('TOKENDEEPSEEK')
 
 if not tokenTG:
-    raise ValueError("Ошибка: TOKEN не найден! Проверь файл .env")
+    raise ValueError("Ошибка: TOKEN для телеграмм не найден! Проверь файл .env")
+if not tokenDeepSeek:
+    raise ValueError("Ошибка: TOKEN для DeepSeek не найден! Проверь файл .env")
 
 LOG_DIR = r'G:\Docker\Log'
 
