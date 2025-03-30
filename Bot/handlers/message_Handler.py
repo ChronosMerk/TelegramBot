@@ -1,6 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from bot_QA_Logger import log_command
+
+from Bot.bot_QA_Logger import log_command
 from Bot.metrics import track_command, track_response_time
 
 

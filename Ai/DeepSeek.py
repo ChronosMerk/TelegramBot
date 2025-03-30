@@ -1,4 +1,5 @@
 from openai import OpenAI
+
 from Bot.config import config
 
 client = OpenAI(api_key=config.tokenDeepSeek, base_url="https://api.deepseek.com")
