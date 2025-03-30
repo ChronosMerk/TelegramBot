@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from bot_QA_Logger import log_command
-from metrics import track_command, track_response_time
+from Bot.metrics import track_command, track_response_time
 
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):

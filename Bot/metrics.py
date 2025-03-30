@@ -1,5 +1,5 @@
 from prometheus_client import Counter, Histogram, start_http_server
-from config import prometheus_port
+from config import config
 
 # Счётчик количества команд
 commands_total = Counter('telegram_bot_commands_total', 'Количество вызовов команд', ['command'])
@@ -8,11 +8,11 @@ commands_total = Counter('telegram_bot_commands_total', 'Количество в
 response_time = Histogram('telegram_bot_response_seconds', 'Время ответа на команду', ['command'])
 
 # Запускаем HTTP-сервер для метрик на порту 8000
-start_http_server(prometheus_port)
+start_http_server(config.prometheus_port)
 
 #Очистка команд
 def normalize_command(cmd: str) -> str:
-    allowed = ["/start", "/help", "/categories"]
+    allowed = ["/start", "/help", "/categories", "/gpt"]
     for command in allowed:
         if cmd.startswith(command):
             return command
