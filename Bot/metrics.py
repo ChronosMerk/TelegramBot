@@ -12,7 +12,7 @@ start_http_server(config.prometheus_port)
 
 #Очистка команд
 def normalize_command(cmd: str) -> str:
-    allowed = ["/start", "/help", "/categories"]
+    allowed = ["/start", "/help", "/categories", "/gpt"]
     for command in allowed:
         if cmd.startswith(command):
             return command

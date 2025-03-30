@@ -23,8 +23,9 @@ logging.basicConfig(
     filemode = 'w'
 )
 
-def starting_bot():
-    logging.getLogger(__name__).info("Все завилось, Проверяй")
+def starting_bot(name):
+    logging.getLogger(name).info("Все завилось, Проверяй")
+    print('Бот запущен')
 
 """Логирует вызов команды и ответ бота"""
 def log_command(user, reply_message):
@@ -38,3 +39,7 @@ def log_command(user, reply_message):
                                          user.callback_query.from_user.id, user.callback_query.data)
         logging.getLogger(__name__).info('Отправлено сообщение пользователю %s (%s): "%s"',
                                          user.callback_query.from_user.username, user.callback_query.from_user.id, reply_message)
+
+def log_ai(name, user, prompt, reply):
+    logging.getLogger(name).info(f"GPT-запрос от {user.username}: {prompt}")
+    logging.getLogger(name).info(f"Ответ GPT: {reply}")

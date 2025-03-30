@@ -3,7 +3,8 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 from bot_QA_Logger import log_command, starting_bot
 from message_Handler import button_handler
-from metrics import track_command, track_response_time
+from Bot.metrics import track_command, track_response_time
+from Ai.GPT import handle_gpt
 
 class QABot:
     """Класс Telegram-бота для QA"""
@@ -18,6 +19,8 @@ class QABot:
         self.application.add_handler(CommandHandler('start', self.start))
         self.application.add_handler(CommandHandler('help', self.help))
         self.application.add_handler(CommandHandler('categories', self.categories))
+        #self.application.add_handler(CommandHandler('deepseek ', self.deepseek))
+        self.application.add_handler(CommandHandler('gpt', handle_gpt))
 
         # Обработчик нажатий на кнопки
         self.application.add_handler(CallbackQueryHandler(button_handler))
@@ -79,5 +82,5 @@ class QABot:
 
     def run(self):
         """Запуск бота"""
-        starting_bot()
+        starting_bot(__name__)
         self.application.run_polling()
