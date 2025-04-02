@@ -1,9 +1,10 @@
+import requests
+from telegram import Update
+from telegram.ext import ContextTypes
+
 from Bot.config import config
 from Bot.metrics import track_command, track_response_time
 from Bot.bot_QA_Logger import log_ai, log_command
-from telegram import Update
-from telegram.ext import ContextTypes
-import requests
 from Bot.roles import is_allowed
 
 async def handle_gpt(update: Update, context: ContextTypes.DEFAULT_TYPE):

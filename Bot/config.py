@@ -30,7 +30,7 @@ def get_config() -> BotConfig:
         raise ValueError(f"❌ Отсутствуют переменные в .env: {', '.join(missing)}")
 
     # Создание директории для логов
-    log_dir = r'G:\Docker\Log'
+    log_dir = '/app/logs'
     os.makedirs(log_dir, exist_ok=True)
 
     return BotConfig(
