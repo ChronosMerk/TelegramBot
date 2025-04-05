@@ -1,7 +1,8 @@
 import logging
 import os
 from datetime import datetime
-from config import config
+from Bot.config import config
+from Bot.log_to_telegram import TelegramLogHandler
 
 # Генерируем уникальное имя файла логов с увеличением цифр
 def get_log_filename():
