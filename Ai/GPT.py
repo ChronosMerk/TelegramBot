@@ -1,4 +1,5 @@
 import requests
+import logging
 from telegram import Update
 from telegram.ext import ContextTypes
 
@@ -29,6 +30,7 @@ async def handle_gpt(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply = query_gpt(prompt)
         except Exception as e:
             reply = f"⚠️ Ошибка GPT: {e}"
+            logging.getLogger('bot').error(f"{e}")
 
         await update.message.reply_text(reply)
         track_command(update.message.text)
