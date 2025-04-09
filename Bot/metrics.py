@@ -1,5 +1,5 @@
 from prometheus_client import Counter, Histogram, start_http_server
-from config import config
+from Bot.config import config
 
 # Счётчик количества команд
 commands_total = Counter('telegram_bot_commands_total', 'Количество вызовов команд', ['command'])

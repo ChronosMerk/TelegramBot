@@ -10,6 +10,7 @@ class BotConfig:
     tokenTG: str
     tokenDeepSeek: str
     tokenGPT: str
+    chat_log: str
     log_dir: str = r'G:\Docker\Log'
     prometheus_port: int = 8000
 
@@ -33,10 +34,14 @@ def get_config() -> BotConfig:
     log_dir = '/app/logs'
     os.makedirs(log_dir, exist_ok=True)
 
+    chat_log = os.getenv("CHATLOG")
+    if not tokenTG: missing.append("CHATLOG")
+
     return BotConfig(
         tokenTG=tokenTG,
         tokenDeepSeek=tokenDeepSeek,
         tokenGPT=tokenGPT,
+        chat_log=chat_log,
         log_dir=log_dir,
         prometheus_port=8000
     )
