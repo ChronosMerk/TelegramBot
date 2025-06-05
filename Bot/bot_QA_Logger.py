@@ -6,7 +6,7 @@ from Bot.log_to_telegram import TelegramLogHandler
 
 # Генерируем уникальное имя файла логов с увеличением цифр
 def get_log_filename():
-    base_name = datetime.now().strftime('bat_log_%Y-%m-%d')
+    base_name = datetime.now().strftime('bot_log_%Y-%m-%d')
     counter = 1
     log_filename = os.path.join(config.log_dir, f"{base_name}_{counter}.log")
 
