@@ -33,12 +33,13 @@ class QABot:
     # Обработчик неизвестных команд и сообщений
     @staticmethod
     async def unknown_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        with track_response_time(update.message.text):
-            reply_message = "Извини, я не понимаю эту команду."
+        if update.message.text == "/":
+            with track_response_time(update.message.text):
+                reply_message = "Извини, я не понимаю эту команду."
 
-            await update.message.reply_text(reply_message)
-            log_command(update, reply_message)
-            track_command("unknown")
+                await update.message.reply_text(reply_message)
+                log_command(update, reply_message)
+                track_command("unknown")
 
     @staticmethod
     async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -83,5 +84,5 @@ class QABot:
 
     def run(self):
         """Запуск бота"""
-        starting_bot(__name__)
+        starting_bot()
         self.application.run_polling()

@@ -24,8 +24,8 @@ logging.basicConfig(
     filemode = 'w'
 )
 
-def starting_bot(name):
-    logging.getLogger("bot").info("✅ Бот успешно запущен")
+def starting_bot():
+    logging.getLogger('bot').info("✅ Бот успешно запущен")
     print('Бот запущен')
 
 """Логирует вызов команды и ответ бота"""
