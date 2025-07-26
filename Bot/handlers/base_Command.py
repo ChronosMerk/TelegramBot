@@ -14,7 +14,6 @@ class QABot:
     def __init__(self):
         """Инициализация бота"""
         self.application = ApplicationBuilder().token(config.tokenTG).build()
-        self.application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, download_video))
         self.setup_handlers()
 
     def setup_handlers(self):
@@ -24,6 +23,7 @@ class QABot:
         self.application.add_handler(CommandHandler('categories', self.categories))
         #self.application.add_handler(CommandHandler('deepseek ', self.deepseek))
         self.application.add_handler(CommandHandler('gpt', handle_gpt))
+        self.application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'^(https?://)?(www\.)?(instagram\.com|tiktok\.com|vt\.tiktok\.com)/'),download_video))
 
         # Обработчик нажатий на кнопки
         self.application.add_handler(CallbackQueryHandler(button_handler))
@@ -31,17 +31,6 @@ class QABot:
         # Неизвестные команды и текстовые сообщения (всегда последними!)
         self.application.add_handler(MessageHandler(filters.COMMAND, self.unknown_message))
         self.application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), self.unknown_message))
-
-    # Обработчик неизвестных команд и сообщений
-    @staticmethod
-    async def unknown_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if update.message.text == "/":
-            with track_response_time(update.message.text):
-                reply_message = "Извини, я не понимаю эту команду."
-
-                await update.message.reply_text(reply_message)
-                log_command(update, reply_message)
-                track_command("unknown")
 
     @staticmethod
     async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -83,6 +72,17 @@ class QABot:
             await update.message.reply_text("📂 Доступные категории статей:", reply_markup=reply_message)
             log_command(update, reply_message)
             track_command(update.message.text)
+
+    # Обработчик неизвестных команд и сообщений
+    @staticmethod
+    async def unknown_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        if "/" in update.message.text:
+            with track_response_time(update.message.text):
+                reply_message = "Извини, я не понимаю эту команду."
+
+                await update.message.reply_text(reply_message)
+                log_command(update, reply_message)
+                track_command("unknown")
 
     def run(self):
         """Запуск бота"""
