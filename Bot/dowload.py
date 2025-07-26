@@ -1,86 +1,49 @@
-import logging
 import os
-import requests
-from bs4 import BeautifulSoup
-from config import load_dotenv
+import yt_dlp
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
+from Bot.config import config
 
-# Настройка логирования
-logging.basicConfig(
-    filename='logs.log', filemode='a',
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+# Настройки yt-dlp для скачивания видео
+ydl_opts = {
+    'format': 'mp4',
+    'outtmpl': 'downloaded_video.%(ext)s',
+    'quiet': True
+}
 
-
-INSTAGRAM_URL = os.getenv("INSTAGRAM_URL")
-TIKTOK_URL = os.getenv("TIKTOK_URL")
-YOUTUBE_URL = os.getenv("YOUTUBE_URL")
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-
-# Единая функция для отправки видео
-async def send_video(chat_id, video_content, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_chat_action(chat_id, 'upload_video')
-    await context.bot.send_video(chat_id, video_content)
-
-# Обработка TikTok
-async def handle_tiktok(url, chat_id, context):
-    data = {'q': url, 'lang': 'en'}
-    headers = {'User-Agent': 'Mozilla/5.0'}
-
-    try:
-        res = requests.post(TIKTOK_URL, data=data, headers=headers).json()
-        soup = BeautifulSoup(res['data'], 'html.parser')
-        video_tag = soup.find('video')
-        video_url = video_tag['data-src']
-        video = requests.get(video_url).content
-        await send_video(chat_id, video, context)
-    except Exception as e:
-        logger.error(f"TikTok error: {e}")
-        await context.bot.send_message(chat_id, "Ошибка загрузки видео с TikTok.")
-
-# Обработка Instagram
-async def handle_instagram(url, chat_id, context):
-    data = {'url': url, 'lang_code': 'en'}
-    headers = {'User-Agent': 'Mozilla/5.0'}
-
-    try:
-        res = requests.post(INSTAGRAM_URL, data=data, headers=headers)
-        if res.status_code == 200:
-            soup = BeautifulSoup(res.content, 'html.parser')
-            first_a = soup.find('a')
-            if first_a:
-                video_url = first_a['href']
-                video = requests.get(video_url).content
-                await send_video(chat_id, video, context)
-            else:
-                await context.bot.send_message(chat_id, "Видео не найдено.")
-        else:
-            await context.bot.send_message(chat_id, "Ошибка запроса к Instagram.")
-    except Exception as e:
-        logger.error(f"Instagram error: {e}")
-        await context.bot.send_message(chat_id, "Ошибка загрузки видео с Instagram.")
-
-# Обработка YouTube
-async def handle_youtube(url, chat_id, context):
-    try:
-        res = requests.get(f'{YOUTUBE_URL}?url={url}').json()
-        video_url = res['data']['video_formats'][0]['url']
-        video = requests.get(video_url).content
-        await send_video(chat_id, video, context)
-    except Exception as e:
-        logger.error(f"YouTube error: {e}")
-        await context.bot.send_message(chat_id, "Ошибка загрузки видео с YouTube.")
-
-# Главный обработчик сообщений
 async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text
     chat_id = update.message.chat_id
-    logger.info(f"Запрос от {chat_id}: {url}")
+    user = update.effective_user
+    username = user.username if user.username else user.first_name
 
-    if url.startswith(('https://vt.tiktok.com/', 'https://www.tiktok.com')):
-        await handle_tiktok(url, chat_id, context)
-    elif url.startswith('https://www.instagram.com/'):
-        await handle_instagram
+    if url.startswith((
+            'https://www.instagram.com/reel/',
+            'https://www.tiktok.com/',
+            'https://vt.tiktok.com/'
+    )):
+        print(f"Запрос на скачивание: {url}")
+
+        await context.bot.send_chat_action(chat_id, "upload_video")
+
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=True)
+                video_file = ydl.prepare_filename(info)
+
+            # Отправка видео
+            with open(video_file, 'rb') as video:
+                await context.bot.send_video(
+                    chat_id, video,
+                    caption=f"🎬 Отправлено пользователем: @{username}"
+                )
+
+            # Удаление файла после отправки
+            os.remove(video_file)
+            await context.bot.delete_message(chat_id, update.message.message_id)
+
+        except Exception as e:
+            print(f"Ошибка скачивания: {e}")
+            await context.bot.send_message(chat_id, f"⚠️ Поддерживаются только Instagram и TikTok. Отправь нормальную ссылку, а не это: {url[:1000]}")
+            # Удаляем неподдерживаемое сообщение
+            await context.bot.delete_message(chat_id, update.message.message_id)

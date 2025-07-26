@@ -6,6 +6,7 @@ from Bot.handlers.message_Handler import button_handler
 from Bot.metrics import track_command, track_response_time
 from Bot.config import config
 from Ai.GPT import handle_gpt
+from Bot.dowload import download_video
 
 class QABot:
     """Класс Telegram-бота для QA"""
@@ -13,6 +14,7 @@ class QABot:
     def __init__(self):
         """Инициализация бота"""
         self.application = ApplicationBuilder().token(config.tokenTG).build()
+        self.application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, download_video))
         self.setup_handlers()
 
     def setup_handlers(self):
