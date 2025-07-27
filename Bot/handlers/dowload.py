@@ -45,6 +45,6 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             except Exception as e:
                 print(f"Ошибка скачивания: {e}")
-                await context.bot.send_message(chat_id, f"⚠️ Поддерживаются только Instagram и TikTok. Отправь нормальную ссылку, а не это: {url[:1000]}")
+                await context.bot.send_message(chat_id, f"⚠️ Поддерживаются только Instagram и TikTok. Отправь @{username} нормальную ссылку, а не это: {url[:1000]}")
                 # Удаляем неподдерживаемое сообщение
                 await context.bot.delete_message(chat_id, update.message.message_id)

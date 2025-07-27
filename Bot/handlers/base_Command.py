@@ -1,12 +1,13 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
-
+import random
 from Bot.bot_QA_Logger import log_command, starting_bot
 from Bot.handlers.message_Handler import button_handler
 from Bot.metrics import track_command, track_response_time
 from Bot.config import config
 from Ai.GPT import handle_gpt
-from Bot.dowload import download_video
+from Bot.handlers.dowload import download_video
+from Bot.handlers.help_handlers import help_command
 
 class QABot:
     """Класс Telegram-бота для QA"""
@@ -19,7 +20,7 @@ class QABot:
     def setup_handlers(self):
         """Регистрация команд"""
         self.application.add_handler(CommandHandler('start', self.start))
-        self.application.add_handler(CommandHandler('help', self.help))
+        self.application.add_handler(CommandHandler('help', help_command))
         self.application.add_handler(CommandHandler('categories', self.categories))
         #self.application.add_handler(CommandHandler('deepseek ', self.deepseek))
         self.application.add_handler(CommandHandler('gpt', handle_gpt))
@@ -41,16 +42,6 @@ class QABot:
 
             await update.message.reply_text(reply_message)
             log_command(update, reply_message)
-            track_command(update.message.text)
-
-    @staticmethod
-    async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Команда /help"""
-        with track_response_time(update.message.text):
-            reply_message = "Основные команды бота: \n/start — приветствие и описание возможностей бота. \n/help — краткая инструкция по использованию и список доступных команд. \n/categories — отображение списка категорий (например, «Manual QA», «Automation QA», «Инструменты», «Методологии», «QAQ» и т.д.)."
-
-            await update.message.reply_text(reply_message)
-            log_command(update,reply_message)
             track_command(update.message.text)
 
     @staticmethod
@@ -77,12 +68,16 @@ class QABot:
     @staticmethod
     async def unknown_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if "/" in update.message.text:
-            with track_response_time(update.message.text):
-                reply_message = "Извини, я не понимаю эту команду."
-
-                await update.message.reply_text(reply_message)
-                log_command(update, reply_message)
-                track_command("unknown")
+            random_responses = [
+                "⛔ Неизвестная команда. Хочешь разорвать петлю? Сначала узнай, как она устроена.",
+                "🔍 Сигнал нераспознан. Попробуй /help — или продолжай искать в темноте.",
+                "🕳 Ты активировал пустоту. Она молчит в ответ.",
+                "⚠️ Протокол не обнаружен. Возможно, он ещё не создан."
+            ]
+            unknown_responses = f'⛔ Ошибка 404: Команда не распознана. \n{random.choice(random_responses)}'
+            await update.message.reply_text(unknown_responses)
+            log_command(update, random_responses)
+            track_command("unknown")
 
     def run(self):
         """Запуск бота"""
