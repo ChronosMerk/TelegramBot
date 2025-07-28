@@ -6,7 +6,7 @@ from Bot.handlers.message_Handler import button_handler
 from Bot.metrics import track_command, track_response_time
 from Bot.config import config
 from Ai.GPT import handle_gpt
-from Bot.handlers.dowload import download_video
+from Bot.handlers.dowload_movies import download_video
 from Bot.handlers.help_handlers import help_command
 
 class QABot:
@@ -67,7 +67,7 @@ class QABot:
     # Обработчик неизвестных команд и сообщений
     @staticmethod
     async def unknown_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if "/" in update.message.text:
+        if "/" in update.message.text and "https://" not in update.message.text:
             random_responses = [
                 "⛔ Неизвестная команда. Хочешь разорвать петлю? Сначала узнай, как она устроена.",
                 "🔍 Сигнал нераспознан. Попробуй /help — или продолжай искать в темноте.",

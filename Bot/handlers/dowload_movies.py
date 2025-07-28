@@ -8,7 +8,6 @@ from Bot.roles import is_allowed_chat
 ydl_opts = {
     'format': 'mp4',
     'outtmpl': 'downloaded_video.%(ext)s',
-    'quiet': True
 }
 
 async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
