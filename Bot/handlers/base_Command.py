@@ -24,7 +24,7 @@ class QABot:
         self.application.add_handler(CommandHandler('categories', self.categories))
         #self.application.add_handler(CommandHandler('deepseek ', self.deepseek))
         self.application.add_handler(CommandHandler('gpt', handle_gpt))
-        self.application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'^(https?://)?(www\.)?(instagram\.com|tiktok\.com|vt\.tiktok\.com)/'),download_video))
+        self.application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'^(https?://)?(www\.)?(instagram\.com|.*\.tiktok\.com)/'),download_video))
 
         # Обработчик нажатий на кнопки
         self.application.add_handler(CallbackQueryHandler(button_handler))
