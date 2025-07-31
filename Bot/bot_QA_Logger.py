@@ -2,7 +2,7 @@ import logging
 import os
 from datetime import datetime
 from Bot.config import config
-from Bot.log_to_telegram import TelegramLogHandler
+from logging_project.log_to_telegram import TelegramLogHandler
 
 # Генерируем уникальное имя файла логов с увеличением цифр
 def get_log_filename():
@@ -32,14 +32,14 @@ def starting_bot():
 def log_command(user, reply_message):
     if user.message:
         logging.getLogger(__name__).info('Пользователь %s (%s) вызвал %s', user.message.from_user.username,
-                                         user.message.from_user.id, user.message.text)
+                                                 user.message.from_user.id, user.message.text)
         logging.getLogger(__name__).info('Отправлено сообщение пользователю %s (%s): "%s"', user.message.from_user.username,
-                                         user.message.from_user.id, reply_message)
+                                                 user.message.from_user.id, reply_message)
     elif user.callback_query:
         logging.getLogger(__name__).info('Пользователь %s (%s) вызвал %s', user.callback_query.from_user.username,
-                                         user.callback_query.from_user.id, user.callback_query.data)
+                                                 user.callback_query.from_user.id, user.callback_query.data)
         logging.getLogger(__name__).info('Отправлено сообщение пользователю %s (%s): "%s"',
-                                         user.callback_query.from_user.username, user.callback_query.from_user.id, reply_message)
+                                                 user.callback_query.from_user.username, user.callback_query.from_user.id, reply_message)
 
 def log_ai(name, user, prompt, reply):
     logging.getLogger(name).info(f"GPT-запрос от {user.username}: {prompt}")

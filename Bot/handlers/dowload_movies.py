@@ -7,7 +7,8 @@ from Bot.roles import is_allowed_chat
 # Настройки yt-dlp для скачивания видео
 ydl_opts = {
     'format': 'mp4',
-    'outtmpl': 'downloaded_video.%(ext)s',
+    'outtmpl': r'G:\app\videos\downloaded_video.%(ext)s',
+    'quiet': True
 }
 ALLOWED_URLS = (
     'https://www.instagram.com/reel/',
@@ -29,7 +30,7 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
             message_to_telegram = f"🎬 Отправлено пользователем: @{username}"
 
             if username_resent:
-                message_to_telegram += f"\n📌 Переслано от пользователя: @{username_resent.get("username") or username_resent.get("first_name")}"
+                message_to_telegram += f"\n📌 Переслано от пользователя: @{username_resent.get('username') or username_resent.get('first_name')}"
 
             message_to_telegram += f"\n🌐 Ссылка: {url[:1000]}"
 
@@ -52,10 +53,14 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.delete_message(chat_id, update.message.message_id)
 
             except Exception as e:
-                if 'photo' in e:
-                    print(f"Ошибка скачивания: {e}")
+                error_text = str(e)
+                print(f"Ошибка скачивания: {error_text}")
+                if 'photo' in error_text:
+                    pass
+                elif 'You must be 18 years old' in error_text:
+                    await context.bot.send_message(chat_id, f"🚫Ошибка, контент 18+\n```{str(e)}```", parse_mode="Markdown")
                 else:
-                    print(f"Ошибка скачивания: {e}")
-                    await context.bot.send_message(chat_id, f"⚠️ Поддерживаются только Instagram и TikTok. Отправь @{username} нормальную ссылку, а не это: {url[:1000]} \n Ошибка: {e}")
+                    print(f"Ошибка скачивания: {error_text}")
+                    await context.bot.send_message(chat_id, f"⚠️ Поддерживаются только Instagram и TikTok. Отправь @{username} нормальную ссылку, а не это: {url[:1000]} \n Ошибка: ```{str(e)}```", parse_mode="Markdown")
                     # Удаляем неподдерживаемое сообщение
                     await context.bot.delete_message(chat_id, update.message.message_id)

@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from Bot.bot_QA_Logger import log_command
-from Bot.metrics import track_command
+from logging_project.metrics import track_command
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     MESSAGE_HELP = '''🧭 Команды Скрытого Протокола:

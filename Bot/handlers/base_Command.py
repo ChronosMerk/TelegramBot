@@ -3,7 +3,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, fil
 import random
 from Bot.bot_QA_Logger import log_command, starting_bot
 from Bot.handlers.message_Handler import button_handler
-from Bot.metrics import track_command, track_response_time
+from logging_project.metrics import track_command, track_response_time
 from Bot.config import config
 from Ai.GPT import handle_gpt
 from Bot.handlers.dowload_movies import download_video
