@@ -2,12 +2,14 @@ import os
 import yt_dlp
 from telegram import Update
 from telegram.ext import ContextTypes
+from Bot.config import config
 from Bot.roles import is_allowed_chat
 
 # Настройки yt-dlp для скачивания видео
 ydl_opts = {
     'format': 'mp4',
-    'outtmpl': r'G:\app\videos\downloaded_video.%(ext)s',
+    'outtmpl': r'downloaded_video.%(ext)s',
+    'cookiefile': config.cookies_path,
     'quiet': True
 }
 ALLOWED_URLS = (
@@ -44,8 +46,10 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # Отправка видео
                 with open(video_file, 'rb') as video:
                     await context.bot.send_video(
-                        chat_id, video,
-                        caption=message_to_telegram
+                        chat_id,
+                        video,
+                        caption=message_to_telegram,
+                        message_thread_id = update.message.message_thread_id
                     )
 
                 # Удаление файла после отправки
@@ -58,7 +62,7 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if 'photo' in error_text:
                     pass
                 elif 'You must be 18 years old' in error_text:
-                    await context.bot.send_message(chat_id, f"🚫Ошибка, контент 18+\n```{str(e)}```", parse_mode="Markdown")
+                    await context.bot.send_message(chat_id, f"🚫Ошибка, контент 18+. Нужно обновить куки\n```{str(e)}```", parse_mode="Markdown")
                 else:
                     print(f"Ошибка скачивания: {error_text}")
                     await context.bot.send_message(chat_id, f"⚠️ Поддерживаются только Instagram и TikTok. Отправь @{username} нормальную ссылку, а не это: {url[:1000]} \n Ошибка: ```{str(e)}```", parse_mode="Markdown")

@@ -10,7 +10,7 @@ services:
       - ../.env
     volumes:
       - ../logs:/app/logs
-      - ../videos:/app/videos
+      - ./cookies:/app/cookies
     restart: unless-stopped
     ports:
       - "8000:8000"  # для Prometheus

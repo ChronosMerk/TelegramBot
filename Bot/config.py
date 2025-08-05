@@ -5,15 +5,19 @@ from dotenv import load_dotenv
 # Загрузка .env
 load_dotenv()
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__ + "/.."))
+
 @dataclass
 class BotConfig:
     tokenTG: str
     tokenDeepSeek: str
     tokenGPT: str
     chat_log: str
+    thread_id: int
     allowed_users: set
     allowed_chats: set
     log_dir: str = r'/app/logs'
+    cookies_path: str = os.path.join(ROOT_DIR, 'cookies', 'instagram.txt')
     prometheus_port: int = 8000
 
 def get_config() -> BotConfig:
@@ -30,6 +34,9 @@ def get_config() -> BotConfig:
 
     chat_log = os.getenv("CHATLOG")
     if not chat_log: missing.append("CHATLOG")
+
+    thread_id = os.getenv("THREAD_ID")
+    if not thread_id: missing.append("THREAD_ID")
 
     raw_ids = os.getenv("ALLOWED_USERS")
     if not raw_ids:
@@ -56,6 +63,7 @@ def get_config() -> BotConfig:
         tokenDeepSeek=tokenDeepSeek,
         tokenGPT=tokenGPT,
         chat_log=chat_log,
+        thread_id=thread_id,
         allowed_users=allowed_users,
         allowed_chats=allowed_chats
     )

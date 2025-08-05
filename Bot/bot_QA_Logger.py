@@ -52,6 +52,7 @@ logger.setLevel(logging.INFO)
 tg_handler = TelegramLogHandler(
     token=config.tokenTG,  # из YAML или .env
     chat_id=config.chat_log,  # -100xxxx
+    thread_id=config.thread_id,
     level=logging.INFO  # или INFO, если нужно всё
 )
 tg_handler.setFormatter(logging.Formatter("[%(levelname)s] %(message)s"))
