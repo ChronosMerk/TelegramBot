@@ -3,13 +3,13 @@ import yt_dlp
 from telegram import Update
 from telegram.ext import ContextTypes
 from Bot.config import config
-from Bot.roles import is_allowed_chat
+from Bot.roles import is_allowed_chat, is_banned_user
 
 # Настройки yt-dlp для скачивания видео
 ydl_opts = {
     'format': 'mp4',
     'outtmpl': r'downloaded_video.%(ext)s',
-    'cookiefile': config.cookies_path,
+    #'cookiefile': config.cookies_path,
     'quiet': True
 }
 ALLOWED_URLS = (
@@ -22,9 +22,16 @@ ALLOWED_URLS = (
 async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text
     chat_id = update.message.chat_id
+    message_thread_id = 7147
+    special_group_id = -1002240938626
     user = update.effective_user
+    user_id = update.effective_user.id
     username = user.username if user.username else user.first_name
     username_resent = update.message.api_kwargs.get("forward_from")
+
+    if is_banned_user(user_id):
+        await update.message.reply_text("⛔ Вы заблокированы.")
+        return
 
     if is_allowed_chat(chat_id):
         if url.startswith(ALLOWED_URLS):
@@ -35,6 +42,11 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 message_to_telegram += f"\n📌 Переслано от пользователя: @{username_resent.get('username') or username_resent.get('first_name')}"
 
             message_to_telegram += f"\n🌐 Ссылка: {url[:1000]}"
+
+            if chat_id == special_group_id:
+                thread_id = message_thread_id
+            else:
+                thread_id = update.message.message_thread_id
 
             await context.bot.send_chat_action(chat_id, "upload_video")
 
@@ -49,7 +61,7 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         chat_id,
                         video,
                         caption=message_to_telegram,
-                        message_thread_id = update.message.message_thread_id
+                        **({'message_thread_id': thread_id} if thread_id else {})
                     )
 
                 # Удаление файла после отправки
@@ -62,7 +74,7 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if 'photo' in error_text:
                     pass
                 elif 'You must be 18 years old' in error_text:
-                    await context.bot.send_message(chat_id, f"🚫Ошибка, контент 18+. Нужно обновить куки\n```{str(e)}```", parse_mode="Markdown")
+                    await context.bot.send_message(chat_id, f"🚫Ошибка, контент 18+. БОЛЬШЕ НЕТ ДОСТУПА \n```{str(e)}```", parse_mode="Markdown")
                 else:
                     print(f"Ошибка скачивания: {error_text}")
                     await context.bot.send_message(chat_id, f"⚠️ Поддерживаются только Instagram и TikTok. Отправь @{username} нормальную ссылку, а не это: {url[:1000]} \n Ошибка: ```{str(e)}```", parse_mode="Markdown")
