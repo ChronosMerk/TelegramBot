@@ -6,11 +6,12 @@ services:
       context: ..
       dockerfile: Docker/Dockerfile
     container_name: telegram_bot
+    depends_on:
+      - redis
     env_file:
       - ../.env
     volumes:
       - ../logs:/app/logs
-      - ./cookies:/app/cookies
     restart: unless-stopped
     ports:
       - "8000:8000"  # для Prometheus
@@ -36,4 +37,10 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis_server
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
 

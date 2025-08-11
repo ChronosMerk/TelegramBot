@@ -2,7 +2,8 @@ import os
 import yt_dlp
 from telegram import Update
 from telegram.ext import ContextTypes
-from Bot.roles import is_allowed_chat, is_banned_user
+from Bot.roles import is_allowed_chat, is_banned_user, is_allowed
+from Bot.limiter import can_send_now, mark_success, quota_left, time_to_reset_str, DAILY_LIMIT
 
 # Настройки yt-dlp для скачивания видео
 ydl_opts = {
@@ -32,6 +33,14 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"⛔ Вы заблокированы. @{username}")
         await context.bot.delete_message(chat_id, update.message.message_id)
         return
+
+    if not is_allowed(user_id):
+        if not can_send_now(user_id):
+            await update.message.reply_text(
+                f"⏳ Лимит {DAILY_LIMIT} видео в день достигнут.\n"
+                f"Сброс через {time_to_reset_str()}."
+            )
+            return
 
     if is_allowed_chat(chat_id):
         if url.startswith(ALLOWED_URLS):
@@ -67,6 +76,8 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # Удаление файла после отправки
                 os.remove(video_file)
                 await context.bot.delete_message(chat_id, update.message.message_id)
+                if not is_allowed(user_id):
+                    mark_success(user_id)
 
             except Exception as e:
                 error_text = str(e)
