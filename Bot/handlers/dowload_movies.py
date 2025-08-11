@@ -2,7 +2,6 @@ import os
 import yt_dlp
 from telegram import Update
 from telegram.ext import ContextTypes
-from Bot.config import config
 from Bot.roles import is_allowed_chat, is_banned_user
 
 # Настройки yt-dlp для скачивания видео
@@ -30,7 +29,8 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username_resent = update.message.api_kwargs.get("forward_from")
 
     if is_banned_user(user_id):
-        await update.message.reply_text("⛔ Вы заблокированы.")
+        await update.message.reply_text(f"⛔ Вы заблокированы. @{username}")
+        await context.bot.delete_message(chat_id, update.message.message_id)
         return
 
     if is_allowed_chat(chat_id):

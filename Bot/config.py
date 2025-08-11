@@ -18,7 +18,7 @@ class BotConfig:
     allowed_chats: set
     banned_users: set
     log_dir: str = r'/app/logs'
-    cookies_path: str = os.path.join(ROOT_DIR, 'cookies', 'instagram.txt')
+    #cookies_path: str = os.path.join(ROOT_DIR, 'cookies', 'instagram.txt')
     prometheus_port: int = 8000
 
 def get_config() -> BotConfig:
