@@ -2,7 +2,6 @@ import logging
 import os
 from datetime import datetime
 from Bot.config import config
-from logging_project.log_to_telegram import TelegramLogHandler
 
 # Генерируем уникальное имя файла логов с увеличением цифр
 def get_log_filename():
@@ -41,19 +40,5 @@ def log_command(user, reply_message):
         logging.getLogger(__name__).info('Отправлено сообщение пользователю %s (%s): "%s"',
                                                  user.callback_query.from_user.username, user.callback_query.from_user.id, reply_message)
 
-def log_ai(name, user, prompt, reply):
-    logging.getLogger(name).info(f"GPT-запрос от {user.username}: {prompt}")
-    logging.getLogger(name).info(f"Ответ GPT: {reply}")
-
 logger = logging.getLogger("bot")
 logger.setLevel(logging.INFO)
-
-# Обработчик для Telegram
-tg_handler = TelegramLogHandler(
-    token=config.tokenTG,  # из YAML или .env
-    chat_id=config.chat_log,  # -100xxxx
-    thread_id=config.thread_id,
-    level=logging.INFO  # или INFO, если нужно всё
-)
-tg_handler.setFormatter(logging.Formatter("[%(levelname)s] %(message)s"))
-logger.addHandler(tg_handler)

@@ -1,7 +1,7 @@
 import requests
 import logging
 
-
+#в урезанной версии не работает
 class TelegramLogHandler(logging.Handler):
     def __init__(self, token: str, chat_id: str, thread_id: int = None, level=logging.ERROR):
         super().__init__(level)

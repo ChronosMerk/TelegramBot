@@ -3,12 +3,12 @@ import yt_dlp
 from telegram import Update
 from telegram.ext import ContextTypes
 from Bot.roles import is_allowed_chat, is_banned_user
+from Bot.config import BotConfig
 
 # Настройки yt-dlp для скачивания видео
 ydl_opts = {
     'format': 'mp4',
     'outtmpl': r'downloaded_video.%(ext)s',
-    #'cookiefile': config.cookies_path,
     'quiet': True
 }
 ALLOWED_URLS = (
