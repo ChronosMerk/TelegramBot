@@ -6,6 +6,8 @@ services:
       context: ..
       dockerfile: Docker/Dockerfile
     container_name: telegram_bot
+    depends_on:
+      - redis
     env_file:
       - ../.env
     volumes:
@@ -13,3 +15,10 @@ services:
     restart: unless-stopped
     environment:
       - PYTHONPATH=/app
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_server
+    restart: unless-stopped
+    ports:
+      - "6379:6379"

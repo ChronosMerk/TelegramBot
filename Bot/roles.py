@@ -1,5 +1,9 @@
 from Bot.config import config
 
+#доступ user
+def is_allowed(user_id: int) -> bool:
+    return user_id in config.allowed_users
+
 #доступ по чатам
 def is_allowed_chat(chat_id: int) -> bool:
     return chat_id in config.allowed_chats
