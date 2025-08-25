@@ -5,7 +5,7 @@ services:
     build:
       context: ..
       dockerfile: Docker/Dockerfile
-    container_name: telegram_bot
+    container_name: telegram_bot_hidden_protocol
     depends_on:
       - redis
     env_file:

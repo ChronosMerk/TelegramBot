@@ -70,6 +70,7 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         chat_id,
                         video,
                         caption=message_to_telegram,
+                        disable_notification=True,
                         **({'message_thread_id': thread_id} if thread_id else {})
                     )
 
@@ -85,9 +86,11 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if 'photo' in error_text:
                     pass
                 elif 'You must be 18 years old' in error_text:
-                    await context.bot.send_message(chat_id, f"🚫Ошибка, контент 18+. БОЛЬШЕ НЕТ ДОСТУПА \n```{str(e)}```", parse_mode="Markdown")
+                    await context.bot.send_message(chat_id, f"🚫Ошибка, контент 18+. БОЛЬШЕ НЕТ ДОСТУПА \n```{str(e)}```", parse_mode="Markdown",disable_notification=True,
+    **({'message_thread_id': thread_id} if thread_id else {}))
                 else:
                     print(f"Ошибка скачивания: {error_text}")
-                    await context.bot.send_message(chat_id, f"⚠️ Поддерживаются только Instagram и TikTok. Отправь @{username} нормальную ссылку, а не это: {url[:1000]} \n Ошибка: ```{str(e)}```", parse_mode="Markdown")
+                    await context.bot.send_message(chat_id, f"⚠️ Поддерживаются только Instagram и TikTok. Отправь @{username} нормальную ссылку, а не это: {url[:1000]} \n Ошибка: ```{str(e)}```", parse_mode="Markdown", disable_notification=True,
+    **({'message_thread_id': thread_id} if thread_id else {}))
                     # Удаляем неподдерживаемое сообщение
                     await context.bot.delete_message(chat_id, update.message.message_id)
